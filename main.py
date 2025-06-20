@@ -13,7 +13,7 @@ def download_archives(username):
 
 # Pobiera wszystkie partie gracza o danym nicku i zwraca je jako osobne elementy tablicy. Opcjonalne argumenty to time_control: określa tempo jakim grane miały być gry które mają zostać zwrócone, oraz delay: zmiana opóźnienia
 # które ma zapobiec throttlingowi oraz tymczasowym banom    
-def pobierz_wszystkie_partie(username, time_control=None, delay=1.0):
+def download_all_games(username, time_control=None, delay=1.0):
     archives = download_archives(username) # Pobiera "archiwa" - wytłumaczenie czym są jest nad użytą funkcją
     all_games = [] # Utworzenie listy wszystkich gier
 
@@ -24,8 +24,8 @@ def pobierz_wszystkie_partie(username, time_control=None, delay=1.0):
             print(f"Error {res.status_code} at {url}") # Błąd pobierania
             continue
 
-        dane = res.json().get("games", []) # Ściągnięcie wszystkich gier z danego URL (miesiąc/rok) do tablicy jako osobne jej elementy
-        for game in dane:
+        data = res.json().get("games", []) # Ściągnięcie wszystkich gier z danego URL (miesiąc/rok) do tablicy jako osobne jej elementy
+        for game in data:
             if time_control is None or game.get("time_class") == time_control: # Sprawdzenie zgodności danej gry z pożądanym tempem (np. blitz, rapid)
                 all_games.append(game) # Dodanie do listy wszystkich gier
 
@@ -85,7 +85,7 @@ def save_stats_to_csv(username, games, filename="statystyki.csv"):
 
 if __name__ == "__main__":
     name = str(input('Podaj nick: '))
-    games = pobierz_wszystkie_partie(name)
+    games = download_all_games(name)
 
     print(f"Found {len(games)} games.")
 
